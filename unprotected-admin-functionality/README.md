@@ -15,17 +15,17 @@ The lab contains an unprotected admin panel. The goal is to locate the admin pan
 2. Checked `robots.txt`, a standard file used to tell search engine crawlers which paths to exclude from indexing.
 3. The file disclosed a `Disallow: /administrator-panel` entry, revealing the existence and location of the admin panel.
 
-![robots.txt disclosing the admin panel path](./robots-txt.png)
+![robots.txt disclosing the admin panel path](./test-robots.png)
 
 ## Exploit
 Navigated directly to `/administrator-panel`. No authentication was required — the panel exposed full user management functionality, including the ability to delete any user account.
 
-![Unauthenticated access to the admin panel](./admin-panel.png)
+![Unauthenticated access to the admin panel](./test-admin-panel.png)
 
 ## Proof of Concept
 Selected the user `carlos` from the admin panel and deleted the account without ever authenticating. The application confirmed the lab as solved.
 
-![Lab solved after deleting the user carlos](./solved.png)
+![Lab solved after deleting the user carlos](./test-solved.png)
 
 ## Root Cause
 The admin panel relied on "security through obscurity" — an unguessable-looking URL — instead of a real access control check. Two failures combined here:
