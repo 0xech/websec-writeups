@@ -14,7 +14,7 @@ The application stores live chat transcripts on the server's file system and ser
 1. Started a live chat session and requested the transcript, which was served at `/download-transcript/2.txt`. The sequential, numeric filename suggested that other transcripts might exist at nearby, predictable IDs.
 2. Sent the request to Burp Intruder, set the numeric ID as the payload position, and ran a Sniper attack using a Numbers payload list (range 0–20).
 
-![Intruder attack results showing 200 OK responses at IDs 1 and 2](1-intruder-results.png)
+![Intruder attack results showing 200 OK responses at IDs 1 and 2](01-intruder-results.png)
 
 3. Reviewed the results: IDs `1` and `2` returned `200 OK`, while all other IDs (including `0`) returned `400`. ID `2` was the tester's own transcript; ID `1` belonged to another user.
 
