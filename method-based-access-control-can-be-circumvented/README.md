@@ -12,12 +12,11 @@ The application implements access controls based partly on the HTTP method of re
 
 ## Methodology
 1. Logged in with admin credentials (`administrator:admin`) and used the admin panel to promote the user `carlos`. Intercepted this request in Burp and sent it to Repeater:
- 
+ ```
  POST /admin-roles HTTP/2
 ...
-
 username=carlos&action=upgrade
-
+```
 2. Logged out, then logged in as the low-privileged user `wiener:peter` in a separate session, and captured a fresh, valid session cookie for that account.
 3. In Repeater, replaced the session cookie on the saved admin request with wiener's cookie and resent it as-is (still `POST`). The application responded `401 Unauthorized`, confirming this endpoint is protected against unauthorized `POST` requests.
 4. To confirm where that check was enforced, resent the same request with an invalid method string, `POSTX`. The response changed from "Unauthorized" to `400 Bad Request — "Missing parameter 'username'"`.
@@ -28,7 +27,7 @@ username=carlos&action=upgrade
 
 5. Used Burp's "Change request method" feature to convert the request to a valid `GET`, moving the parameters into the query string, and updated `username` from `carlos` to `wiener`:
 
-    GET /admin-roles?username=wiener&action=upgrade HTTP/2
+   ``` GET /admin-roles?username=wiener&action=upgrade HTTP/2```
 
    ## Exploit
 Sent the `GET` request with wiener's own session and username. The response was `302 Found`, redirecting to `/admin` — indicating the role change succeeded, since `GET` was never inspected by the enforcing layer at all.
