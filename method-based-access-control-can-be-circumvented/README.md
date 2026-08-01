@@ -22,7 +22,7 @@ username=carlos&action=upgrade
 3. In Repeater, replaced the session cookie on the saved admin request with wiener's cookie and resent it as-is (still `POST`). The application responded `401 Unauthorized`, confirming this endpoint is protected against unauthorized `POST` requests.
 4. To confirm where that check was enforced, resent the same request with an invalid method string, `POSTX`. The response changed from "Unauthorized" to `400 Bad Request — "Missing parameter 'username'"`.
 
-![POSTX request reaching the application logic instead of being blocked, proving the access check is method-string-based and enforced outside the application](screenshots/01-postx-diagnostic.png)
+![POSTX request reaching the application logic instead of being blocked, proving the access check is method-string-based and enforced outside the application](01-postx-diagnostic.png)
 
    This confirmed the access control was not a real authorization check inside the application — it was a front-end/proxy rule doing a literal string match on `"POST"`. Anything that isn't an exact match (including a completely invalid method like `POSTX`) skips that layer entirely and reaches the application directly.
 
@@ -33,12 +33,12 @@ username=carlos&action=upgrade
    ## Exploit
 Sent the `GET` request with wiener's own session and username. The response was `302 Found`, redirecting to `/admin` — indicating the role change succeeded, since `GET` was never inspected by the enforcing layer at all.
 
-![302 Found after resending as GET with wiener's own username](screenshots/02-get-success.png)
+![302 Found after resending as GET with wiener's own username](02-get-success.png)
 
 ## Proof of Concept
 After the successful `GET` request, `wiener` was confirmed to have administrator privileges, and the lab was marked as solved.
 
-![Lab solved after self-promoting wiener to administrator](screenshots/03-solved.png)
+![Lab solved after self-promoting wiener to administrator](03-solved.png)
 
 ## Root Cause
 The access control check was enforced by a layer in front of the application (e.g., a reverse proxy or WAF rule) that only inspected requests using the exact literal string `"POST"`, rather than the application performing real, method-independent authorization on the action itself. This was directly confirmed: sending an invalid method (`POSTX`) bypassed the block and reached the application's own logic, which then failed only because the request body/parameters weren't in the expected place for that method — proving the enforcing layer, not the application, was the (incomplete) gatekeeper.
