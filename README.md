@@ -12,3 +12,4 @@ I'm building toward a career in application security / penetration testing.
 | [User role controlled by request parameter](user-role-controlled-by-request-parameter/README.md) | Broken Access Control | Apprentice |
 | [Insecure direct object references](insecure-direct-object-references/README.md) | Broken Access Control | Apprentice |
 | [Method-based access control can be circumvented](method-based-access-control-can-be-circumvented/README.md) | Broken Access Control | Practitioner |
+| [SQL injection vulnerability allowing login bypass](sql-injection-vulnerability-allowing-login-bypass/README.md) | Injection (SQL Injection) | Apprentice |
