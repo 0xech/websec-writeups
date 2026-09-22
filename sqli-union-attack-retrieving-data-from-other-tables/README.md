@@ -19,7 +19,7 @@ The product category filter is vulnerable to SQL injection, and query results ar
 ```
    This returned an error, confirming the query returns exactly **2 columns**.
 
-   ![Confirming column count via ORDER BY](screenshots/00-column-count.png)
+   ![Confirming column count via ORDER BY](00-column-count.png)
 
 2. **Confirmed the injection point and column count with a UNION SELECT of NULLs:**
 ```
@@ -27,7 +27,7 @@ The product category filter is vulnerable to SQL injection, and query results ar
 ```
    The payload was reflected directly in the page as a heading, confirming both the injection worked and that the query returns 2 columns.
 
-   ![Injected UNION query reflected as a page heading, confirming 2 columns](screenshots/01-union-payload-reflected.png)
+   ![Injected UNION query reflected as a page heading, confirming 2 columns](01-union-payload-reflected.png)
 
 3. **Identified which column accepts text data** by replacing each `null` with a string value one at a time:
 ```
@@ -44,12 +44,12 @@ The product category filter is vulnerable to SQL injection, and query results ar
 ## Exploit
 The query returned every row from the `users` table, reflected directly on the page alongside the normal product listings — including credentials for `wiener`, `administrator`, and `carlos`.
 
-![Leaked usernames and password hashes for wiener, administrator, and carlos](screenshots/02-credentials-extracted.png)
+![Leaked usernames and password hashes for wiener, administrator, and carlos](02-credentials-extracted.png)
 
 ## Proof of Concept
 Logged in using the extracted `administrator` credentials. The application confirmed the lab was solved.
 
-![Lab solved, logged in as administrator](screenshots/03-solved.png)
+![Lab solved, logged in as administrator](03-solved.png)
 
 ## Root Cause
 User input from the `category` parameter was concatenated directly into a SQL query without parameterization, and — critically — the application reflected raw query results back into the page. This combination allowed an attacker to not only alter the query's logic (as in a login bypass) but to append an entirely separate query via `UNION` and read its output directly, effectively turning an unrelated product filter into a full data exfiltration channel.
